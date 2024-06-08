@@ -1,18 +1,13 @@
 import React, {useCallback} from 'react';
-import {FilterValueType} from "./App";
-import {useAutoAnimate} from "@formkit/auto-animate/react";
-import {AddItemForm} from "./AddItemForm";
-import {EditableSpan} from "./EditableSpan";
-import {Button, IconButton} from "@mui/material";
-import {Delete} from "@mui/icons-material";
-import {Styles} from "./__styles";
-import {TaskComponent} from "./TaskComponent";
-
-export type TaskType = {
-  id: string;
-  title: string;
-  isDone: boolean;
-}
+import {useAutoAnimate} from '@formkit/auto-animate/react';
+import {AddItemForm} from '../features/AddItemForm';
+import {EditableSpan} from '../features/EditableSpan';
+import {Button, IconButton} from '@mui/material';
+import {Delete} from '@mui/icons-material';
+import {Styles} from '../__styles';
+import {Task} from './task/Task';
+import {FilterValueType} from '../state/todolists-reducer';
+import {TaskStatuses, TaskType} from '../api/todolists-api';
 
 type PropsType = {
   id: string;
@@ -23,7 +18,7 @@ type PropsType = {
   addTask: (title: string, todolistId: string) => void;
   children?: React.ReactNode;
   changeTaskTitle: (taskId: string, newValue: string, todolistId: string) => void;
-  changeTaskStatus: (taskId: string, isDone: boolean, todolistId: string) => void;
+  changeTaskStatus: (taskId: string, status: TaskStatuses, todolistId: string) => void;
   filter: FilterValueType;
   removeTodolist: (todolistId: string) => void;
   changeTodolistTitle: (todolistId: string, newTitle: string) => void;
@@ -33,8 +28,6 @@ export const Todolist: React.FC<PropsType> = React.memo(({
                                                            children,
                                                            ...props
                                                          }) => {
-
-  console.log('Todolist called');
 
   const [listRef] = useAutoAnimate<HTMLDivElement>();
   const onAllClickHandler = useCallback(
@@ -55,10 +48,10 @@ export const Todolist: React.FC<PropsType> = React.memo(({
 
   let tasksForToDoList = props.tasks;
   if (props.filter === 'active') {
-    tasksForToDoList = props.tasks.filter(task => task.isDone === false)
+    tasksForToDoList = props.tasks.filter(task => task.status === TaskStatuses.New)
   }
   if (props.filter === 'completed') {
-    tasksForToDoList = props.tasks.filter(task => task.isDone === true)
+    tasksForToDoList = props.tasks.filter(task => task.status === TaskStatuses.Completed)
   }
 
   return (
@@ -73,12 +66,12 @@ export const Todolist: React.FC<PropsType> = React.memo(({
 
       <div ref={listRef}>
         {tasksForToDoList.map((task: TaskType) =>
-          <TaskComponent removeTask={props.removeTask}
-                         changeTaskTitle={props.changeTaskTitle}
-                         changeTaskStatus={props.changeTaskStatus}
-                         task={task}
-                         todolistId={props.id}
-                         key={task.id}
+          <Task removeTask={props.removeTask}
+                changeTaskTitle={props.changeTaskTitle}
+                changeTaskStatus={props.changeTaskStatus}
+                task={task}
+                todolistId={props.id}
+                key={task.id}
           />
         )}
       </div>

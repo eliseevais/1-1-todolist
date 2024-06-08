@@ -1,48 +1,37 @@
-import React, {useCallback, useReducer} from 'react';
+import React, {useCallback} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {AddItemForm} from '../features/AddItemForm';
+import {AppRootStateType} from '../state/store';
+import {TaskStatuses, TaskType} from '../api/todolists-api';
 import './App.css';
-import {TaskType, Todolist} from './Todolist';
-import {v1} from "uuid";
-import {AddItemForm} from "./AddItemForm";
+import {Todolist} from '../todolist/Todolist';
+import {Menu} from '@mui/icons-material';
+import {v1} from 'uuid';
 import {
-  AppBar,
-  Button, Container, Grid,
-  IconButton, Paper,
-  Toolbar,
-  Typography
-} from "@mui/material";
-import {Menu} from "@mui/icons-material";
+  AppBar, Button, Container, Grid,
+  IconButton, Paper, Toolbar, Typography
+} from '@mui/material';
 import {
-  addTodolistAC, changeTodolistFilterAC,
-  changeTodolistTitleAC,
-  todolistsReducer, removeTodolistAC
-} from "./state/todolists-reducer";
+  addTodolistAC, changeTodolistFilterAC, changeTodolistTitleAC,
+  FilterValueType, removeTodolistAC, TodolistDomainType
+} from '../state/todolists-reducer';
 import {
-  addTaskAC,
-  changeTaskStatusAC, changeTaskTitleAC,
-  removeTaskAC, tasksReducer
-} from "./state/tasks-reducer";
-import {useDispatch, useSelector} from "react-redux";
-import {AppRootStateType} from "./state/store";
+  addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC
+} from '../state/tasks-reducer';
 
-export type FilterValueType = 'all' | 'active' | 'completed';
-export type TodolistType = {
-  id: string;
-  title: string;
-  filter: FilterValueType;
-};
 export type TasksStateType = {
   [key: string]: Array<TaskType>
 };
 
 const AppWithRedux = () => {
-  console.log('AppWithRedux called');
-
   let todolistID01 = v1();
   let todolistID02 = v1();
 
   const dispatch = useDispatch();
-  const todolists = useSelector<AppRootStateType, Array<TodolistType>>(state => state.todolists);
-  const tasksObj = useSelector<AppRootStateType, TasksStateType>(state => state.tasks);
+  const todolists = useSelector<AppRootStateType, Array<TodolistDomainType>>(
+    state => state.todolists);
+  const tasksObj = useSelector<AppRootStateType, TasksStateType>(
+    state => state.tasks);
 
   const removeTask = useCallback((taskId: string, todolistId: string) => {
     const action = removeTaskAC(taskId, todolistId);
@@ -54,30 +43,34 @@ const AppWithRedux = () => {
     dispatch(action)
   }, [dispatch])
 
-  const changeTaskStatus = useCallback((taskId: string, isDone: boolean, todolistId: string) => {
-    const action = changeTaskStatusAC(taskId, isDone, todolistId);
-    dispatch(action)
-  }, [dispatch])
+  const changeTaskStatus = useCallback(
+    (taskId: string, status: TaskStatuses, todolistId: string) => {
+      const action = changeTaskStatusAC(taskId, status, todolistId);
+      dispatch(action)
+    }, [dispatch])
 
-  const changeTaskTitle = useCallback((taskId: string, newTitle: string, todolistId: string) => {
-    const action = changeTaskTitleAC(taskId, newTitle, todolistId);
-    dispatch(action)
-  }, [dispatch])
+  const changeTaskTitle = useCallback(
+    (taskId: string, newTitle: string, todolistId: string) => {
+      const action = changeTaskTitleAC(taskId, newTitle, todolistId);
+      dispatch(action)
+    }, [dispatch])
 
-  const changeFilter = useCallback((filter: FilterValueType, id: string) => {
-    const action = changeTodolistFilterAC(filter, id);
-    dispatch(action)
-  }, [dispatch])
+  const changeFilter = useCallback(
+    (filter: FilterValueType, id: string) => {
+      const action = changeTodolistFilterAC(filter, id);
+      dispatch(action)
+    }, [dispatch])
 
   const removeTodolist = useCallback((id: string) => {
     const action = removeTodolistAC(id);
     dispatch(action)
   }, [dispatch])
 
-  const changeTodolistTitle = useCallback((id: string, title: string) => {
-    const action = changeTodolistTitleAC(id, title);
-    dispatch(action);
-  }, [dispatch])
+  const changeTodolistTitle = useCallback(
+    (id: string, title: string) => {
+      const action = changeTodolistTitleAC(id, title);
+      dispatch(action);
+    }, [dispatch])
 
   const addTodoList = useCallback((title: string) => {
     const action = addTodolistAC(title);
