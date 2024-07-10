@@ -203,7 +203,7 @@ export const CreateTask = () => {
                onChange={inputGetTasksHandler}/>
         <button onClick={getTasksHandler}>get tasks</button>
       </div>
-      <input placeholder={'enter new task title'} value={taskTitle}
+      <input placeholder={'enter new Task title'} value={taskTitle}
              onChange={inputCreateTaskHandler}/>
       <button onClick={createTaskHandler}>create task</button>
       <div>{JSON.stringify(state)}</div>
@@ -318,7 +318,7 @@ export const UpdateTask = () => {
              onChange={inputTaskHandler}
       />
 
-      <input placeholder={'task title'} value={title}
+      <input placeholder={'Task title'} value={title}
              onChange={(event) => {
                setTitle(event.currentTarget.value)
              }}/>

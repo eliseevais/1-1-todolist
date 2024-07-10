@@ -1,9 +1,9 @@
 import React, {ChangeEvent, useCallback} from "react";
 import {Checkbox, IconButton} from "@mui/material";
-import {Styles} from "../../__styles";
-import {EditableSpan} from "../../features/EditableSpan";
+import {Styles} from "../../../../__styles";
+import {EditableSpan} from "../../../../components/EditableSpan/EditableSpan";
 import {Delete} from "@mui/icons-material";
-import {TaskStatuses, TaskType} from "../../api/todolists-api";
+import {TaskStatuses, TaskType} from "../../../../api/todolists-api";
 
 type TaskComponentPropsType = {
   removeTask: (taskId: string, todolistId: string) => void;
@@ -22,7 +22,7 @@ export const Task = React.memo((props: TaskComponentPropsType) => {
         ? TaskStatuses.Completed
         : TaskStatuses.New,
       props.todolistId);
-    // props.changeTaskStatus(props.task.id, event.currentTarget.checked, props.todolistId);
+    // props.changeTaskStatus(props.Task.id, event.currentTarget.checked, props.todolistId);
   };
 
   const onChangeTitleHandler = useCallback((newValue: string) => {

@@ -1,15 +1,15 @@
 import React, {useCallback, useEffect} from 'react';
 import {useAutoAnimate} from '@formkit/auto-animate/react';
-import {AddItemForm} from '../features/AddItemForm';
-import {EditableSpan} from '../features/EditableSpan';
+import {AddItemForm} from '../../../components/AddItemForm/AddItemForm';
+import {EditableSpan} from '../../../components/EditableSpan/EditableSpan';
 import {Button, IconButton} from '@mui/material';
 import {Delete} from '@mui/icons-material';
-import {Styles} from '../__styles';
-import {Task} from './task/Task';
-import {FilterValueType} from '../state/todolists-reducer';
-import {TaskStatuses, TaskType} from '../api/todolists-api';
-import {useAppDispatch} from "../state/store";
-import {fetchTasksTC, setTasksAC} from "../state/tasks-reducer";
+import {Styles} from '../../../__styles';
+import {Task} from './Task/Task';
+import {FilterValueType} from './todolists-reducer';
+import {TaskStatuses, TaskType} from '../../../api/todolists-api';
+import {useAppDispatch} from "../../../app/store";
+import {fetchTasksTC, setTasksAC} from "./tasks-reducer";
 
 type PropsType = {
   id: string;
