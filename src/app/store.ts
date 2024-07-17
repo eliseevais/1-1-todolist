@@ -9,10 +9,12 @@ import {
 import {AnyAction, applyMiddleware, combineReducers, createStore} from 'redux';
 import thunk, {ThunkAction, ThunkDispatch} from 'redux-thunk';
 import {useDispatch} from "react-redux";
+import {appReducer, ErrorAndStatusActionsType} from "./app-reducer";
 
 const rootReducer = combineReducers({
   tasks: tasksReducer,
-  todolists: todolistsReducer
+  todolists: todolistsReducer,
+  app: appReducer
 })
 
 export const store = createStore(rootReducer, applyMiddleware(thunk));
@@ -26,7 +28,10 @@ export type AppThunkDispatch = ThunkDispatch<AppRootStateType, any, AnyAction>
 export const useAppDispatch = () => useDispatch<AppThunkDispatch>();
 
 // все типы action для всего app
-export type AppActionsType = TodolistActionsType | TasksActionsType;
+export type AppActionsType =
+  | TodolistActionsType
+  | TasksActionsType
+  | ErrorAndStatusActionsType;
 
 // типизация всех thunks
 // https://redux.js.org/usage/usage-with-typescript#type-checking-redux-thunks
