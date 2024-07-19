@@ -15,9 +15,10 @@ import {Todolist} from "./Todolist/Todolist";
 import {TasksStateType} from "../../app/App";
 
 type TodolistsPropsType = {
-  todolists: Array<TodolistDomainType>
+  todolists: Array<TodolistDomainType>;
+  demo?: boolean
 }
-export const TodolistsList: React.FC<TodolistsPropsType> = (props) => {
+export const TodolistsList: React.FC<TodolistsPropsType> = ({demo = false}) => {
 
   const dispatch = useAppDispatch();
   const todolists = useSelector<AppRootStateType, Array<TodolistDomainType>>(
@@ -26,6 +27,9 @@ export const TodolistsList: React.FC<TodolistsPropsType> = (props) => {
     state => state.tasks);
 
   useEffect(() => {
+    if (demo) {
+      return
+    }
     dispatch(fetchTodolistsTC())
   }, []);
 
@@ -49,7 +53,7 @@ export const TodolistsList: React.FC<TodolistsPropsType> = (props) => {
 
   const changeFilter = useCallback(
     (filter: FilterValueType, id: string) => {
-      const action = changeTodolistFilterAC(filter, id);
+      const action = changeTodolistFilterAC(id, filter);
       dispatch(action)
     }, [dispatch])
 
@@ -80,17 +84,16 @@ export const TodolistsList: React.FC<TodolistsPropsType> = (props) => {
               return <Grid item key={tl.id}>
                 <Paper style={{padding: '10px'}}>
                   <Todolist key={tl.id}
-                            id={tl.id}
-                            title={tl.title}
+                            todolist={tl}
                             tasks={tasksForToDoList}
                             removeTask={removeTask}
                             changeFilter={changeFilter}
                             addTask={addTask}
                             changeTaskStatus={changeTaskStatus}
                             changeTaskTitle={changeTaskTitle}
-                            filter={tl.filter}
                             removeTodolist={removeTodolist}
                             changeTodolistTitle={changeTodolistTitle}
+                            demo={demo}
                   >
                   </Todolist>
                 </Paper>

@@ -20,7 +20,11 @@ export type TasksStateType = {
   [key: string]: Array<TaskType>
 };
 
-const App = () => {
+type AppPropsType = {
+  demo?: boolean
+}
+
+const App = ({demo = false}: AppPropsType) => {
 
   const status = useSelector<AppRootStateType, RequestStatusType>(state => state.app.status);
 
@@ -48,7 +52,7 @@ const App = () => {
         }
       </AppBar>
       <Container fixed>
-        <TodolistsList todolists={[]}/>
+        <TodolistsList todolists={[]} demo={demo}/>
       </Container>
     </div>
   )

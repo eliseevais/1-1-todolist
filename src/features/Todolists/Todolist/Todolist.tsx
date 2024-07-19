@@ -6,70 +6,78 @@ import {Button, IconButton} from '@mui/material';
 import {Delete} from '@mui/icons-material';
 import {Styles} from '../../../__styles';
 import {Task} from './Task/Task';
-import {FilterValueType} from './todolists-reducer';
+import {FilterValueType, TodolistDomainType} from './todolists-reducer';
 import {TaskStatuses, TaskType} from '../../../api/todolists-api';
 import {useAppDispatch} from "../../../app/store";
 import {fetchTasksTC, setTasksAC} from "./tasks-reducer";
 
 type PropsType = {
-  id: string;
-  title: string;
+  todolist: TodolistDomainType
   tasks: Array<TaskType>;
   removeTask: (taskId: string, todolistId: string) => void;
   changeFilter: (filter: FilterValueType, id: string) => void;
   addTask: (title: string, todolistId: string) => void;
-  children?: React.ReactNode;
   changeTaskTitle: (taskId: string, newValue: string, todolistId: string) => void;
   changeTaskStatus: (taskId: string, status: TaskStatuses, todolistId: string) => void;
-  filter: FilterValueType;
   removeTodolist: (todolistId: string) => void;
   changeTodolistTitle: (todolistId: string, newTitle: string) => void;
+  children?: React.ReactNode;
+  demo?: boolean
 }
 
 export const Todolist: React.FC<PropsType> = React.memo(({
                                                            children,
+                                                           demo = false,
                                                            ...props
                                                          }) => {
 
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(fetchTasksTC(props.id))
+    if (demo) {
+      return
+    }
+    dispatch(fetchTasksTC(props.todolist.id))
   }, []);
 
   const [listRef] = useAutoAnimate<HTMLDivElement>();
   const onAllClickHandler = useCallback(
-    () => props.changeFilter('all', props.id), [props.changeFilter, props.id]);
+    () => props.changeFilter('all', props.todolist.id), [props.changeFilter, props.todolist.id]);
   const onActiveClickHandler = useCallback(
-    () => props.changeFilter('active', props.id), [props.changeFilter, props.id]);
+    () => props.changeFilter('active', props.todolist.id), [props.changeFilter, props.todolist.id]);
   const onCompletedClickHandler = useCallback(
-    () => props.changeFilter('completed', props.id), [props.changeFilter, props.id]);
+    () => props.changeFilter('completed', props.todolist.id), [props.changeFilter, props.todolist.id]);
   const removeTodolist = () => {
-    props.removeTodolist(props.id)
+    props.removeTodolist(props.todolist.id)
   };
   const changeTodolistTitle = useCallback((newTitle: string) => {
-    props.changeTodolistTitle(props.id, newTitle);
-  }, [props.changeTodolistTitle, props.id]);
+    props.changeTodolistTitle(props.todolist.id, newTitle);
+  }, [props.changeTodolistTitle, props.todolist.id]);
   const addTaskWrapper = useCallback((title: string) => {
-    props.addTask(title, props.id)
-  }, [props.addTask, props.id]);
+    props.addTask(title, props.todolist.id)
+  }, [props.addTask, props.todolist.id]);
 
   let tasksForToDoList = props.tasks;
-  if (props.filter === 'active') {
+  if (props.todolist.filter === 'active') {
     tasksForToDoList = props.tasks.filter(task => task.status === TaskStatuses.New)
   }
-  if (props.filter === 'completed') {
+  if (props.todolist.filter === 'completed') {
     tasksForToDoList = props.tasks.filter(task => task.status === TaskStatuses.Completed)
   }
 
   return (
     <div>
       <h3>
-        <EditableSpan title={props.title} onChange={changeTodolistTitle}/>
-        <IconButton onClick={removeTodolist}>
+        <EditableSpan title={props.todolist.title}
+                      onChange={changeTodolistTitle}/>
+        <IconButton onClick={removeTodolist}
+                    disabled={props.todolist.entityStatus === 'loading'}
+        >
           <Delete/>
         </IconButton>
       </h3>
-      <AddItemForm addItem={addTaskWrapper}/>
+      <AddItemForm addItem={addTaskWrapper}
+                   disabled={props.todolist.entityStatus === 'loading'}
+      />
 
       <div ref={listRef}>
         {tasksForToDoList.map((task: TaskType) =>
@@ -77,13 +85,13 @@ export const Todolist: React.FC<PropsType> = React.memo(({
                 changeTaskTitle={props.changeTaskTitle}
                 changeTaskStatus={props.changeTaskStatus}
                 task={task}
-                todolistId={props.id}
+                todolistId={props.todolist.id}
                 key={task.id}
           />
         )}
       </div>
       <div>
-        <Button variant={props.filter === 'all' ? 'outlined' : 'text'}
+        <Button variant={props.todolist.filter === 'all' ? 'outlined' : 'text'}
                 onClick={onAllClickHandler}
                 style={{
                   color: `${Styles.mainColor}`,
@@ -92,21 +100,23 @@ export const Todolist: React.FC<PropsType> = React.memo(({
         >
           All
         </Button>
-        <Button variant={props.filter === 'active' ? 'outlined' : 'text'}
-                onClick={onActiveClickHandler}
-                style={{
-                  color: `${Styles.secondary}`,
-                  borderColor: `${Styles.secondary}`
-                }}
+        <Button
+          variant={props.todolist.filter === 'active' ? 'outlined' : 'text'}
+          onClick={onActiveClickHandler}
+          style={{
+            color: `${Styles.secondary}`,
+            borderColor: `${Styles.secondary}`
+          }}
         >
           Active
         </Button>
-        <Button variant={props.filter === 'completed' ? 'outlined' : 'text'}
-                onClick={onCompletedClickHandler}
-                style={{
-                  color: `${Styles.primary}`,
-                  borderColor: `${Styles.primary}`
-                }}
+        <Button
+          variant={props.todolist.filter === 'completed' ? 'outlined' : 'text'}
+          onClick={onCompletedClickHandler}
+          style={{
+            color: `${Styles.primary}`,
+            borderColor: `${Styles.primary}`
+          }}
         >
           Completed
         </Button>

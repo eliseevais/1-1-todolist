@@ -5,9 +5,10 @@ import {PostAdd} from "@mui/icons-material";
 
 type AddItemFormPropsType = {
   addItem: (title: string) => void;
+  disabled?: boolean
 }
 
-export const AddItemForm = React.memo((props: AddItemFormPropsType) => {
+export const AddItemForm = React.memo(({addItem, disabled = false}: AddItemFormPropsType) => {
   console.log('AddItemForm called');
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -20,13 +21,13 @@ export const AddItemForm = React.memo((props: AddItemFormPropsType) => {
     }
 
     if (event.key === 'Enter') {
-      props.addItem(newTaskTitle);
+      addItem(newTaskTitle);
       setNewTaskTitle('');
     }
   };
   const addTask = () => {
     if (newTaskTitle.trim() !== '') {
-      props.addItem(newTaskTitle.trim());
+      addItem(newTaskTitle.trim());
       setNewTaskTitle('');
     } else {
       setError('Field is required')
@@ -41,6 +42,7 @@ export const AddItemForm = React.memo((props: AddItemFormPropsType) => {
                  onKeyPress={onKeyPressHandler}
                  error={!!error}
                  helperText={error}
+                 disabled={disabled}
 
       />
       <IconButton onClick={addTask}
@@ -48,6 +50,7 @@ export const AddItemForm = React.memo((props: AddItemFormPropsType) => {
                     borderColor: `${Styles.mainColor}`,
                     color: `${Styles.mainColor}`
                   }}
+                  disabled={disabled}
       >
         <PostAdd/>
       </IconButton>
