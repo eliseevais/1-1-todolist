@@ -37,9 +37,10 @@ export const todolistsAPI = {
     return instance.delete<ResponseType>(`todo-lists/${todolistId}/tasks/${taskId}`)
   },
   updateTask(todolistId: string, taskId: string, model: TaskUpdateModelType) {
-    return instance.put<TaskUpdateModelType>(`todo-lists/${todolistId}/tasks/${taskId}`, model)
+    return instance.put<ResponseType<TaskUpdateModelType>>(`todo-lists/${todolistId}/tasks/${taskId}`, model)
   }
 };
+
 
 // TYPES
 export enum TaskStatuses {
@@ -81,7 +82,7 @@ export type TaskUpdateModelType = {
   startDate: string
   deadline: string
 };
-type ResponseType<D = {}> = {
+export type ResponseType<D = {}> = {
   resultCode: number
   messages: Array<string>
   data: D
