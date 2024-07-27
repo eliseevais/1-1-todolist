@@ -113,7 +113,7 @@ export const removeTaskTC = (taskId: string, todolistId: string): AppThunk =>
   };
 export const addTaskTC = (title: string, todolistId: string): AppThunk =>
   (dispatch) => {
-    dispatch(setAppStatusAC('loading'))
+    dispatch(setAppStatusAC('loading'));
     todolistsAPI.createTask(todolistId, title)
       .then(res => {
         if (res.data.resultCode === 0) {

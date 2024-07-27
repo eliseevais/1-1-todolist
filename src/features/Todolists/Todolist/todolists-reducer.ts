@@ -1,6 +1,7 @@
 import {todolistsAPI, TodolistType} from '../../../api/todolists-api';
 import {AppThunk} from "../../../app/store";
 import {RequestStatusType, setAppStatusAC} from "../../../app/app-reducer";
+import {handleServerNetworkError} from "../../../utils/error-utils";
 
 const initialState: Array<TodolistDomainType> = [];
 
@@ -72,9 +73,8 @@ export const fetchTodolistsTC = (): AppThunk => async dispatch => {
     const res = await todolistsAPI.getTodolists();
     dispatch(setTodolistsAC(res.data));
     dispatch(setAppStatusAC('succeeded'))
-  } catch (e) {
-    console.warn(e);
-    dispatch(setAppStatusAC('failed'))
+  } catch (error) {
+    handleServerNetworkError(error, dispatch)
   }
 };
 export const addTodolistTC = (title: string): AppThunk => (dispatch) => {
